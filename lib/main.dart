@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk_auth.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk_template.dart';
 
 void main() {
+  KakaoSdk.init(nativeAppKey: '695b50069013cefb6fcf75cdef975997');
   runApp(const MyApp());
 }
 
@@ -56,7 +60,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
+  void _incrementCounter() async {
+    bool isInstalled = await isKakaoTalkInstalled();
+    print(isInstalled);
+    OAuthToken token = isInstalled
+        ? await UserApi.instance.loginWithKakaoTalk()
+        : await UserApi.instance.loginWithKakaoAccount();
+
+    print(token.idToken);
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
